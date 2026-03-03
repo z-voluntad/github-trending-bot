@@ -63,9 +63,14 @@ def summarize(repo):
     readme = get_readme(repo["owner"], repo["repo"])
     r = requests.post(
         f"{base_url}/v1/messages",
-        headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+        headers={
+            "x-api-key": api_key,
+            "Authorization": f"Bearer {api_key}",
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        },
         json={
-            "model": "claude-sonnet-4-6",
+            "model": os.environ.get("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022"),
             "max_tokens": 300,
             "messages": [{"role": "user", "content": (
                 f"项目: {repo['full_name']}\n描述: {repo['desc']}\nREADME:\n{readme}\n\n"
